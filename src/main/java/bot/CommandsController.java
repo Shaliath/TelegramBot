@@ -30,10 +30,10 @@ public class CommandsController {
         long chatId = update.getMessage().getChatId();
 
         switch (text) {
-            case START_COMMAND_SYMBOL + "hello":
-                return helloCommand(chatId);
             case START_COMMAND_SYMBOL + "start":
                 return startCommand(chatId);
+            case START_COMMAND_SYMBOL + "help":
+                return helpCommand(chatId);
             case START_COMMAND_SYMBOL + "buttons":
                 return buttonsCommand(chatId);
             default:
@@ -53,10 +53,10 @@ public class CommandsController {
         return message;
     }
 
-    private static SendMessage helloCommand(long chatId) {
+    private static SendMessage helpCommand(long chatId) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
-        message.setText("Hello hello");
+        message.setText("TBD Help text");
         return message;
     }
 
