@@ -1,8 +1,10 @@
 package bot;
 
+import database.UsersController;
 import infra.BaseBot;
 import infra.DatabaseController;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -11,7 +13,9 @@ public class MyBot extends BaseBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            System.out.println(DatabaseController.checkUser(update.getMessage().getFrom()));
+            Message incomingMessage = update.getMessage();
+            System.out.println(UsersController.insert(incomingMessage.getFrom()));
+            System.out.println(DatabaseController.checkUser(incomingMessage.getFrom()));
             SendMessage message;
             if (update.getMessage().getForwardFrom() != null) {
                 message = MessageController.processMessage(update.getMessage());
