@@ -2,6 +2,6 @@ package infra.manager;
 
 
 public interface ITestConfig {
-    String hostUrl();
-    String authUrl();
+    String databaseUrl();
+    String databaseName();
 }

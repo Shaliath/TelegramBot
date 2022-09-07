@@ -13,8 +13,8 @@ import java.util.Date;
 
 public class DatabaseController {
 
-    private static final String DB_URL = "mongodb://localhost:27017";
-    private static final String DB_NAME = "bot_db";
+    private static final String DB_URL = Configuration.getConfig().databaseUrl();
+    private static final String DB_NAME = Configuration.getConfig().databaseName();
 
     public static String checkUser(User user) {
         return checkUserData(user.getFirstName(), user.getLastName(), user.getId(), user.getUserName());
@@ -24,23 +24,21 @@ public class DatabaseController {
         return processMessage(message.getFrom().getId(), message.getChatId(), message.getMessageId(), message.getForwardFrom().getId());
     }
 
-    private static String checkUserData(String first_name, String last_name, long user_id, String username) {
+    private static String checkUserData(String firstName, String lastName, long userId, String username) {
         try (MongoClient mongoClient = new MongoClient(new MongoClientURI(DB_URL))) {
             MongoDatabase database = mongoClient.getDatabase(DB_NAME);
             MongoCollection<Document> collection = database.getCollection("users");
-            long found = collection.countDocuments(Document.parse("{id : " + user_id + "}"));
+            long found = collection.countDocuments(Document.parse("{id : " + userId + "}"));
             if (found == 0) {
-                Document doc = new Document("first_name", first_name)
-                        .append("last_name", last_name)
-                        .append("id", user_id)
+                Document doc = new Document("first_name", firstName)
+                        .append("last_name", lastName)
+                        .append("id", userId)
                         .append("username", username);
                 collection.insertOne(doc);
-                mongoClient.close();
                 System.out.println("User not exists in database. Written.");
                 return "no_exists";
             } else {
                 System.out.println("User exists in database.");
-                mongoClient.close();
                 return "exists";
             }
         } catch (MongoClientException e) {

@@ -16,7 +16,8 @@ public class ConfigManager {
     private String configFilename;
 
 
-    public ConfigManager() {}
+    public ConfigManager() {
+    }
 
     public void init() {
         configFilesProvider = () -> Arrays.asList(Paths.get(configFilename));

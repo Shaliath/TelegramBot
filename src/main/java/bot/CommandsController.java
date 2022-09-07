@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class CommandsController {
 
@@ -21,7 +22,7 @@ public class CommandsController {
             case "/mock":
                 return "mock";
             default:
-                return  "Unknown command, try again";
+                return "Unknown command, try again";
         }
     }
 
@@ -29,16 +30,30 @@ public class CommandsController {
         String text = update.getMessage().getText();
         long chatId = update.getMessage().getChatId();
 
-        switch (text) {
+        switch (text.toLowerCase(Locale.ROOT)) {
             case START_COMMAND_SYMBOL + "start":
                 return startCommand(chatId);
             case START_COMMAND_SYMBOL + "help":
                 return helpCommand(chatId);
+            case START_COMMAND_SYMBOL + "list":
+                return listCommand(chatId);
+            case START_COMMAND_SYMBOL + "notifications":
+                return getNotificationsCommand(chatId);
+            case START_COMMAND_SYMBOL + "delete":
+                return deleteNotificationsCommand(chatId);
             case START_COMMAND_SYMBOL + "buttons":
                 return buttonsCommand(chatId);
             default:
                 return defaultCommand(chatId);
         }
+    }
+
+    private static SendMessage deleteNotificationsCommand(long chatId) {
+        return null;
+    }
+
+    private static SendMessage getNotificationsCommand(long chatId) {
+        return null;
     }
 
     private static SendMessage buttonsCommand(long chatId) {
@@ -57,6 +72,20 @@ public class CommandsController {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText("TBD Help text");
+        return message;
+    }
+
+    private static SendMessage listCommand(long chatId) {
+        String listMessage = "List of available commands:\n" +
+                "**/start** - Hello! This is a bot which can remind you to reply to the message\n" +
+                "**/help** - Get help\n" +
+                "**/list** - Get the list of available commands\n" +
+                "**/notifications** - Get pending notifications\n" +
+                "**/delete** - Delete specific or all notification(s)";
+
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText(listMessage);
         return message;
     }
 
