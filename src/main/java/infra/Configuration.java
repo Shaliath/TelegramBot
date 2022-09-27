@@ -33,7 +33,7 @@ public class Configuration {
         configManager
                 .setConfigFilename(configFile)
                 .init();
-        return configManager.readConfigurationOf(clazz, Optional.ofNullable(prefix).orElse("local"));
+        return configManager.readConfigurationOf(clazz, Optional.ofNullable(prefix).orElse("cloud"));
     }
 
     private static <T> T initConfiguration(String configFile, Class<T> clazz) {

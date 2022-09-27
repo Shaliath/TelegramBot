@@ -14,7 +14,8 @@ public class MyBot extends BaseBot {
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             Message incomingMessage = update.getMessage();
-            System.out.println(UsersController.insert(incomingMessage.getFrom()));
+            System.out.println(UsersController.create(incomingMessage.getFrom()));
+            System.out.println(UsersController.getByUserId(incomingMessage.getFrom().getId()));
             System.out.println(DatabaseController.checkUser(incomingMessage.getFrom()));
             SendMessage message;
             if (update.getMessage().getForwardFrom() != null) {

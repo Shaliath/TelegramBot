@@ -14,21 +14,14 @@ public class CloudMongoDBService {
     private CloudMongoDBService(){
 
     }
-
+    public static final String DB_NAME = Configuration.getConfig().databaseName();
     private static final String DB_URL = Configuration.getConfig().databaseUrl();
-    private static final String DB_NAME = Configuration.getConfig().databaseName();
-    public static MongoDatabase connect(){
 
+    public static MongoClientSettings getSettings(){
         ConnectionString connectionString = new ConnectionString(DB_URL);
-        MongoClientSettings settings = MongoClientSettings.builder()
+        return MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
                 .build();
-        try (MongoClient mongoClient = MongoClients.create(settings)) {
-            return mongoClient.getDatabase(DB_NAME);
-        } catch (MongoClientException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
     }
 
     public static MongoCollection<Document> users(MongoDatabase database) {
