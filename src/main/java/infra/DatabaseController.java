@@ -7,8 +7,10 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class DatabaseController {
@@ -22,6 +24,11 @@ public class DatabaseController {
 
     public static String saveMessage(Message message) {
         return processMessage(message.getFrom().getId(), message.getChatId(), message.getMessageId(), message.getForwardFrom().getId());
+    }
+
+    public static String saveMessage(Update update, long time) {
+        Message message = update.getCallbackQuery().getMessage();
+        return processMessage(message.getFrom().getId(), message.getChatId(), message.getMessageId(), message.getForwardFrom().getId(), time);
     }
 
     private static String checkUserData(String firstName, String lastName, long userId, String username) {
@@ -56,6 +63,26 @@ public class DatabaseController {
                     .append("message_id", messageId)
                     .append("forwarded_from_id", forwardedFromId)
                     .append("created", new Date());
+            collection.insertOne(doc);
+            return doc.get("_id").toString();
+        } catch (MongoClientException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    private static String processMessage(long userId, long chatId, long messageId, long forwardedFromId, long time) {
+
+        try (MongoClient mongoClient = new MongoClient(new MongoClientURI(DB_URL))) {
+            MongoDatabase database = mongoClient.getDatabase(DB_NAME);
+            MongoCollection<Document> collection = database.getCollection("messages");
+            Document doc = new Document("user_id", userId)
+                    .append("chat_id", chatId)
+                    .append("message_id", messageId)
+                    .append("forwarded_from_id", forwardedFromId)
+                    .append("created", LocalDateTime.now())
+                    .append("notifyAt", LocalDateTime.now().plusHours(time))
+                    .append("notificationSent", false);
             collection.insertOne(doc);
             return doc.get("_id").toString();
         } catch (MongoClientException e) {
